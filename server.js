@@ -1,4 +1,5 @@
 const express = require('express');
+const mysql = require('mysql2');
 
 const PORT = process.allowedNodeEnvironmentFlags.PORT || 3001;
 const app = express();
@@ -8,15 +9,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 
+// Connect to database
+const db = mysql.createConnection(
+    {
+        host: 'localhost',
+        user: 'root',
+        password: '1=Brown+Soda',
+        database: 'election'
+    },
+    console.log('Connected to the election database.')
+)
 
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Hello World!'
-    });
-});
+
+db.query(`SELECT * FROM candidates`, (err, rows) => {
+    console.log(rows);
+})
 
 
-// Default response for any other request (NOT FOUND)
+// Default (catchall) response for any other request (NOT FOUND)
 app.use((req, res) => {
     res.status(404).end();
 });
